@@ -55,7 +55,7 @@ def scrape_articles():
                 results.append(f"Article {i+1}:\n{headline}\n{content}\n")
 
             except Exception as e:
-                print(f"⚠️ Skipping article {i+1} due to error: {e}")
+                print(f" Skipping article {i+1} due to error: {e}")
 
             driver.back()
 
