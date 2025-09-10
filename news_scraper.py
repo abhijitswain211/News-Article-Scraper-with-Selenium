@@ -20,7 +20,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def scrape_articles():
-    # Setup Chrome options
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -30,15 +29,12 @@ def scrape_articles():
     driver = webdriver.Chrome(service=Service(), options=chrome_options)
 
     try:
-        # Open BBC News
         driver.get("https://www.bbc.com/news")
 
-        # Wait for articles to load
         WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.gs-c-promo-heading"))
         )
 
-        # Grab first 3 articles
         articles = driver.find_elements(By.CSS_SELECTOR, "a.gs-c-promo-heading")[:3]
         results = []
 
@@ -48,7 +44,6 @@ def scrape_articles():
                     EC.element_to_be_clickable(articles[i])
                 ).click()
 
-                # Wait for headline to load
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.TAG_NAME, "h1"))
                 )
@@ -64,19 +59,17 @@ def scrape_articles():
 
             driver.back()
 
-            # Re-fetch articles after going back
             WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.gs-c-promo-heading"))
             )
             articles = driver.find_elements(By.CSS_SELECTOR, "a.gs-c-promo-heading")[:3]
 
-        # Save to file
         with open("articles.txt", "w", encoding="utf-8") as f:
             f.write("\n---\n".join(results))
 
-        print("\n✅ Done! Articles saved to 'articles.txt'\n")
-        print("📰 Scraped Articles:\n")
-        print("\n---\n".join(results))  # Print to console
+        print("\n Done! Articles saved to 'articles.txt'\n")
+        print(" Scraped Articles:\n")
+        print("\n---\n".join(results))  
 
     finally:
         driver.quit()
